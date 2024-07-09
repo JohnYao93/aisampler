@@ -165,13 +165,13 @@ class Trainer:
                     }
                 )
 
-        if epoch_idx % self.cfg.checkpoint.save_every == 0:
+        if epoch_idx % self.cfg.checkpoint.save_every == 0 or epoch_idx == 1:
             self.save_model(epoch=epoch_idx)
 
         return jnp.array(ar_losses).mean(), jnp.array(adv_losses).mean(), ar
 
     def train_model(self):
-        for epoch in tqdm(range(1, self.cfg.train.num_epochs)):
+        for epoch in tqdm(range(1, self.cfg.train.num_epochs + 1)):
             ar_loss, adv_loss, ar = self.train_epoch(epoch_idx=epoch)
 
             tqdm.write(
@@ -189,7 +189,7 @@ class Trainer:
             force=self.cfg.checkpoint.overwrite,
         )
 
-        if epoch == 0:
+        if epoch == 1:
             with open(os.path.join(self.checkpoint_path, "cfg.json"), "w") as f:
                 json.dump(self.cfg.to_dict(), f, indent=4)
 
