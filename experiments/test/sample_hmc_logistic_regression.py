@@ -1,4 +1,6 @@
 from pathlib import Path
+import os
+os.environ['JAX_PLATFORMS'] = 'cpu'
 
 import jax
 import jax.numpy as jnp

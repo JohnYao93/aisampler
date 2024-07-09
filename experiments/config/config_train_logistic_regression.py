@@ -11,7 +11,7 @@ def get_config():
     cfg.checkpoint = ConfigDict()
     cfg.checkpoint.checkpoint_dir = "./checkpoints"
     cfg.checkpoint.overwrite = True
-    cfg.checkpoint.save_best_only = True
+    cfg.checkpoint.save_best_only = False
     cfg.checkpoint.save_every = 1
 
     cfg.dataset_name = "Heart"

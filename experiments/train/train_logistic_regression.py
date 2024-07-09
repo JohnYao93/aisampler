@@ -2,6 +2,9 @@ from absl import app
 from ml_collections import config_flags
 from pathlib import Path
 
+import os
+os.environ['JAX_PLATFORMS'] = 'cpu'
+
 import jax
 import numpy as np
 
