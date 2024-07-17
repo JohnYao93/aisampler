@@ -29,8 +29,8 @@ class EquivariantLinear(nn.Module):
     def setup(self) -> None:
         assert self.num_input % 2 == 0
         assert self.num_output % 2 == 0
-        self.A = self.param('A', nn.initializers.lecun_normal(), (self.output_features // 2, self.input_features // 2))
-        self.B = self.param('B', nn.initializers.lecun_normal(), (self.output_features // 2, self.input_features // 2))
+        self.A = self.param('A', nn.initializers.lecun_normal(), (self.num_output / 2, self.num_input / 2))
+        self.B = self.param('B', nn.initializers.lecun_normal(), (self.num_output / 2, self.num_input / 2))
 
     def __call__(self, x):
         # Construct the full weight matrix
