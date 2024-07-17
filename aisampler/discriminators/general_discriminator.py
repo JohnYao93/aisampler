@@ -15,9 +15,14 @@ class GeneralDiscriminator(nn.Module):
         )
 
     def __call__(self, x):
-        return 
+        trans_x =  self.R * self.L(x)
+        inp = jnp.concatenate(trans_x, x)
+        # Choose the first output. [0] should be equal to -1 * [1].
+        return self.GD(inp)[0]
 
-
+# Linear Layer of the form
+# | A B |
+# | B A |
 class EquivariantLinear(nn.Module):
     num_input: int
     num_output: int
