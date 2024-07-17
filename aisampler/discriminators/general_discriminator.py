@@ -2,7 +2,6 @@ import jax.numpy as jnp
 import flax.linen as nn
 from aisampler.kernels import create_henon_flow
 
-
 class GeneralDiscriminator(nn.Module):
     L: nn.Module
     GD: nn.Module
@@ -40,7 +39,7 @@ class EquivariantLinear(nn.Module):
         
         return jnp.dot(x, weights)
 
-def create_general_disciminator(
+def create_general_discriminator(
         num_flow_layers: int,
         num_hidden_flow: int,
         num_layers_flow: int,
