@@ -5,7 +5,7 @@ from aisampler.kernels import create_henon_flow
 
 class GeneralDiscriminator(nn.Module):
     L: nn.Module
-    D: nn.Module
+    GD: nn.Module
     d: int
 
     def setup(self) -> None:
@@ -35,9 +35,6 @@ class EquivariantLinear(nn.Module):
         
         return jnp.dot(x, weights)
 
-class GD(nn.Module):
-    x
-
 def create_general_disciminator(
         num_flow_layers: int,
         num_hidden_flow: int,
@@ -56,7 +53,17 @@ def create_general_disciminator(
             num_hidden=num_hidden_flow,
             d=d,
         ),
-
+        GD=nn.Sequential(
+            [EquivariantLinear(num_input=d, num_output=num_hidden_d), activation]
+            + [
+                EquivariantLinear(num_input=num_hidden_d, num_output = num_hidden_d),
+                activation
+            ]
+            *
+            (num_layers_d - 1)
+            + [EquivariantLinear(num_input=num_hidden_d, num_output=2)]
+        ),
+        d = d
     )
 
 
