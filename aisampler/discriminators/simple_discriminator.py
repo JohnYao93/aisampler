@@ -25,7 +25,6 @@ class D(nn.Module):
     psi: nn.Module
     eta: nn.Module
 
-
 def create_simple_discriminator(
     num_flow_layers: int,
     num_hidden_flow: int,
