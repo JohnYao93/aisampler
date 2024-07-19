@@ -18,7 +18,7 @@ try:
 except ImportError:
     wandb = None
 
-from aisampler.discriminators import create_simple_discriminator
+from aisampler.discriminators import create_simple_discriminator, create_general_discriminator
 from aisampler.sampling import (
     get_sample_fn,
 )
@@ -51,14 +51,12 @@ class Trainer:
 
     def init_model(self):
 
-        discriminator = create_simple_discriminator(
+        discriminator = create_general_discriminator(
             num_flow_layers=self.cfg.kernel.num_flow_layers,
             num_hidden_flow=self.cfg.kernel.num_hidden,
             num_layers_flow=self.cfg.kernel.num_layers,
-            num_layers_psi=self.cfg.discriminator.num_layers_psi,
-            num_hidden_psi=self.cfg.discriminator.num_hidden_psi,
-            num_layers_eta=self.cfg.discriminator.num_layers_eta,
-            num_hidden_eta=self.cfg.discriminator.num_hidden_eta,
+            num_layers_d=self.cfg.discriminator.num_layers_d,
+            num_hidden_d=self.cfg.discriminator.num_hidden_d,
             activation=self.cfg.discriminator.activation,
             d=self.cfg.kernel.d,
         )
@@ -70,7 +68,7 @@ class Trainer:
         )["params"]
 
         theta_params = discriminator_params["L"]
-        phi_params = discriminator_params["D"]
+        phi_params = discriminator_params["GD"]
 
         L_optimizer = optax.adam(learning_rate=self.cfg.train.kernel_learning_rate)
         discriminator_optimizer = optax.adam(

@@ -38,6 +38,10 @@ def get_config():
     cfg.discriminator.num_hidden_eta = 128
     cfg.discriminator.activation = "relu"
 
+    # General Discriminator
+    cfg.discriminator.num_layers_d = 3
+    cfg.discriminator.num_hidden_d = 128
+
     # Train
     cfg.train = ConfigDict()
     cfg.train.init = "glorot_normal"
