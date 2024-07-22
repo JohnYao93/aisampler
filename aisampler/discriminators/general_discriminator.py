@@ -4,7 +4,7 @@ from aisampler.kernels import create_henon_flow
 
 class GeneralDiscriminator(nn.Module):
     L: nn.Module
-    GD: nn.Module
+    D: nn.Module
     d: int
 
     def setup(self) -> None:
@@ -15,29 +15,30 @@ class GeneralDiscriminator(nn.Module):
 
     def __call__(self, x):
         trans_x =  self.R * self.L(x)
-        inp = jnp.concatenate(trans_x, x)
+        inp = jnp.concatenate([trans_x, x], axis=1)
         # Choose the first output. [0] should be equal to -1 * [1].
-        return self.GD(inp)[0]
+        return self.D(inp)[0]
 
 # Linear Layer of the form
 # | A B |
 # | B A |
 class EquivariantLinear(nn.Module):
-    num_input: int
     num_output: int
-    def setup(self) -> None:
-        assert self.num_input % 2 == 0
-        assert self.num_output % 2 == 0
-        self.A = self.param('A', nn.initializers.lecun_normal(), (self.num_output / 2, self.num_input / 2))
-        self.B = self.param('B', nn.initializers.lecun_normal(), (self.num_output / 2, self.num_input / 2))
-
+    
+    @nn.compact
     def __call__(self, x):
+        input_features = x.shape[-1]
+        assert input_features % 2 == 0
+        assert self.num_output % 2 == 0
+
+        A = self.param("A", nn.initializers.lecun_normal(), (input_features // 2, self.num_output // 2))
+        B = self.param("B", nn.initializers.lecun_normal(), (input_features // 2, self.num_output // 2))
         # Construct the full weight matrix
-        top = jnp.concatenate([self.A, self.B], axis=1)
-        bottom = jnp.concatenate([self.B, self.A], axis=1)
+        top = jnp.concatenate([A, B], axis=1)
+        bottom = jnp.concatenate([B, A], axis=1)
         weights = jnp.concatenate([top, bottom], axis=0)
-        
-        return jnp.dot(x, weights)
+
+        return x@weights
 
 def create_general_discriminator(
         num_flow_layers: int,
@@ -57,15 +58,15 @@ def create_general_discriminator(
             num_hidden=num_hidden_flow,
             d=d,
         ),
-        GD=nn.Sequential(
-            [EquivariantLinear(num_input=d, num_output=num_hidden_d), activation]
-            + [
-                EquivariantLinear(num_input=num_hidden_d, num_output = num_hidden_d),
+        D=nn.Sequential(
+            [EquivariantLinear(num_output=num_hidden_d), activation] + 
+            [
+                EquivariantLinear(num_output=num_hidden_d),
                 activation
             ]
             *
             (num_layers_d - 1)
-            + [EquivariantLinear(num_input=num_hidden_d, num_output=2)]
+            + [EquivariantLinear(num_output=2)]
         ),
         d = d
     )

@@ -68,7 +68,7 @@ class Trainer:
         )["params"]
 
         theta_params = discriminator_params["L"]
-        phi_params = discriminator_params["GD"]
+        phi_params = discriminator_params["D"]
 
         L_optimizer = optax.adam(learning_rate=self.cfg.train.kernel_learning_rate)
         discriminator_optimizer = optax.adam(
