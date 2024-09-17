@@ -17,7 +17,7 @@ class GeneralDiscriminator(nn.Module):
         trans_x =  self.R * self.L(x)
         inp = jnp.concatenate([trans_x, x], axis=1)
         # Choose the first output. [0] should be equal to -1 * [1].
-        return self.D(inp)[0]
+        return self.D(inp)[:,0]
 
 # Linear Layer of the form
 # | A B |
