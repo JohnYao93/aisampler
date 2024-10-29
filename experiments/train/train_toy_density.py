@@ -1,3 +1,4 @@
+from unittest.mock import patch
 from absl import app
 from ml_collections import config_flags
 from pathlib import Path
@@ -39,7 +40,8 @@ def main(_):
 
     density = getattr(densities, cfg.target_density_name)
 
-    densities.plot_hamiltonian_density(density)
+    if not cfg.train.quiet:
+        densities.plot_hamiltonian_density(density)
 
     trainer = Trainer(
         cfg=cfg,
@@ -53,9 +55,10 @@ def main(_):
         jax.random.PRNGKey(42),
     )
 
-    sampling.plot_samples_with_density(
-        samples=samples, target_density=density, ar=ar, name=None
-    )
+    if not cfg.train.quiet:  
+        sampling.plot_samples_with_density(
+            samples=samples, target_density=density, ar=ar, name=None
+        )
 
 
 if __name__ == "__main__":

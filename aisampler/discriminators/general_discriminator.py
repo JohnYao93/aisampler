@@ -18,6 +18,9 @@ class GeneralDiscriminator(nn.Module):
         inp = jnp.concatenate([trans_x, x], axis=1)
         # Choose the first output. [0] should be equal to -1 * [1].
         return self.D(inp)[:,0]
+    
+    def __to_onnx(self):
+        dummy_input = 1
 
 # Linear Layer of the form
 # | A B |
@@ -38,7 +41,7 @@ class EquivariantLinear(nn.Module):
         bottom = jnp.concatenate([B, A], axis=1)
         weights = jnp.concatenate([top, bottom], axis=0)
 
-        return x@weights
+        return x @ weights
 
 def create_general_discriminator(
         num_flow_layers: int,

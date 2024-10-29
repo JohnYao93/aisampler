@@ -10,7 +10,7 @@ def get_config():
     cfg.figure_path = "./figures/" + datetime.now().strftime("%Y%m%d-%H%M%S")
 
     # Target density
-    cfg.target_density_name = "hamiltonian_ring"
+    cfg.target_density_name = "hamiltonian_mog6"
 
     cfg.checkpoint = ConfigDict()
     cfg.checkpoint.checkpoint_dir = "./checkpoints"
@@ -26,21 +26,21 @@ def get_config():
     # Kernel
     cfg.kernel = ConfigDict()
     cfg.kernel.num_flow_layers = 5
-    cfg.kernel.num_layers = 2
-    cfg.kernel.num_hidden = 32
+    cfg.kernel.num_layers = 4
+    cfg.kernel.num_hidden = 64
     cfg.kernel.d = 2
 
     # Discriminator
     cfg.discriminator = ConfigDict()
-    cfg.discriminator.num_layers_psi = 3
+    cfg.discriminator.num_layers_psi = 2
     cfg.discriminator.num_hidden_psi = 128
-    cfg.discriminator.num_layers_eta = 3
+    cfg.discriminator.num_layers_eta = 2
     cfg.discriminator.num_hidden_eta = 128
     cfg.discriminator.activation = "relu"
 
     # General Discriminator
-    cfg.discriminator.num_layers_d = 3
-    cfg.discriminator.num_hidden_d = 128
+    cfg.discriminator.num_layers_d = 2
+    cfg.discriminator.num_hidden_d = 256
 
     # Train
     cfg.train = ConfigDict()
@@ -48,11 +48,14 @@ def get_config():
     cfg.train.kernel_learning_rate = 1e-4
     cfg.train.discriminator_learning_rate = 1e-4
     cfg.train.num_resampling_steps = 500
-    cfg.train.num_resampling_parallel_chains = 50
+    cfg.train.num_resampling_parallel_chains = 100
     cfg.train.resampling_burn_in = 100
     cfg.train.batch_size = 4096
-    cfg.train.num_epochs = 51
-    cfg.train.num_AR_steps = 3
+    cfg.train.num_epochs = 50
+    cfg.train.num_AR_steps = 5
     cfg.train.num_adversarial_steps = 1
+    
+    # Train options
+    cfg.train.quiet = False
 
     return cfg
